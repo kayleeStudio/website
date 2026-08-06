@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kaylee Studio — Web apps, shipped before the quarter ends</title>
 <meta name="description" content="Fixed-scope, fixed-price web app and website builds for founders. Working software in weeks, your repo from day one.">
+<meta name="theme-color" content="#1F7A4D">
+<link rel="canonical" href="https://kayleestudio.com/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kayleestudio.com/">
+<meta property="og:title" content="Kaylee Studio — web apps, shipped before the quarter ends">
+<meta property="og:description" content="Fixed-scope, fixed-price web app and website builds for founders. Working software in weeks, your repo from day one.">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%231F7A4D'/%3E%3Cpath d='M16 9v14M9 16h14' stroke='%23fff' stroke-width='3.4' stroke-linecap='round'/%3E%3C/svg%3E">
 <style>
 /* Fonts embedded as woff2 so the page is one self-contained file with no network dependency. */
@@ -260,7 +267,15 @@ form.done{display:none}
 .proj-body .tags{margin-top:16px;font-family:var(--mono);font-size:.72rem;color:var(--slate-2);letter-spacing:.04em}
 
 /* ---------- reviews ---------- */
-.revs{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:52px}
+.draft-note{
+  margin-top:26px;display:inline-flex;align-items:center;gap:9px;
+  font-family:var(--mono);font-size:.74rem;letter-spacing:.04em;
+  color:#8A5A12;background:rgba(227,178,60,.16);border:1px dashed rgba(227,178,60,.7);
+  padding:9px 14px;border-radius:8px;
+}
+.draft-note::before{content:"!";font-weight:700;color:#8A5A12}
+.revs{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:26px}
+.revs[data-sample] .rev{border-style:dashed}
 .rev{
   background:var(--paper);border:1px solid var(--line);border-radius:var(--r);
   padding:28px 26px;display:flex;flex-direction:column;
@@ -319,6 +334,20 @@ footer{padding:40px 0;border-top:1px solid var(--line)}
 </style>
 </head>
 <body>
+<!--
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │  BEFORE THIS GOES LIVE — everything below is placeholder content.       │
+  ├─────────────────────────────────────────────────────────────────────────┤
+  │  1. REVIEWS  — all three quotes and the people are invented. Replace    │
+  │                with real, named, permitted testimonials. (Section 6.)   │
+  │  2. NUMBERS  — "11 yrs / 60+ / 94% / Day 1" in the trust strip.         │
+  │  3. WORK     — the four projects, their outcomes and timelines.         │
+  │  4. PRICING  — the four starting prices and week ranges in Services.    │
+  │  5. CONTACT  — hello@kayleestudio.com in the footer.                    │
+  │  6. DOMAIN   — og:url and canonical in <head>.                          │
+  │  7. SLOTS    — "1 slot open for September" in the hero and final CTA.   │
+  └─────────────────────────────────────────────────────────────────────────┘
+-->
 
 <nav class="nav">
   <div class="wrap nav-in">
@@ -351,8 +380,15 @@ footer{padding:40px 0;border-top:1px solid var(--line)}
         <h2>Start a build</h2>
         <em>Reply in 1 day</em>
       </div>
-      <!-- Wire `action` to your form handler (Formspree, Basin, your own API) before launch. -->
-      <form id="briefForm" action="#" method="post" novalidate>
+      <!--
+        Submissions are handled by Netlify Forms — deploy this to Netlify and briefs
+        arrive under Forms > brief, with no server to run. To use a different handler
+        instead (Formspree, Basin, your own API), set action="https://…" and delete
+        the data-netlify attributes and the two hidden inputs below.
+      -->
+      <form id="briefForm" name="brief" method="POST" action="/" data-netlify="true" netlify-honeypot="bot-field" novalidate>
+        <input type="hidden" name="form-name" value="brief">
+        <p hidden><label>Leave this empty: <input name="bot-field"></label></p>
         <div class="two">
           <div class="field">
             <label for="name">Your name</label>
@@ -574,13 +610,24 @@ footer{padding:40px 0;border-top:1px solid var(--line)}
   </div>
 </section>
 
-<!-- 6 ─ REVIEWS · replace with real, attributable testimonials before launch -->
+<!--
+  6 ─ REVIEWS
+  The three quotes below are SAMPLE COPY written to show the layout. The names,
+  roles and companies are invented. Replace every one with a real quote from a
+  real client who agreed to be named, then delete the .draft-note element and
+  the data-sample attribute. Publishing invented testimonials as if they were
+  genuine is illegal in most markets (FTC endorsement rules in the US) and is
+  the fastest way to lose a prospect who checks.
+-->
 <section class="sec" style="background:var(--paper);border-top:1px solid var(--line)">
   <div class="wrap">
     <div class="eyebrow">Reviews</div>
     <h2>What clients say after launch.</h2>
 
-    <div class="revs">
+    <!-- Delete this note once real testimonials are in. -->
+    <p class="draft-note">Sample layout — replace all three with real, named client quotes before publishing.</p>
+
+    <div class="revs" data-sample="true">
       <div class="rev">
         <q>He quoted six weeks and we launched in five. I've hired four agencies before this and that has never once happened.</q>
         <div class="who"><b>Dana Okafor</b><span>Ops Director, Ledgerline</span></div>
@@ -629,11 +676,28 @@ const io = new IntersectionObserver((entries) => {
 const diff = document.querySelector('.diff');
 if (diff) io.observe(diff);
 
-// Front-end confirmation. Replace with a real POST to your form handler.
-document.getElementById('briefForm').addEventListener('submit', (e) => {
+// Post the brief without leaving the page, then swap in the confirmation.
+// Netlify Forms accepts a urlencoded POST to the page's own path.
+document.getElementById('briefForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const form = e.currentTarget;
   if (!form.checkValidity()) { form.reportValidity(); return; }
+
+  const button = form.querySelector('button[type=submit]');
+  button.disabled = true;
+  button.textContent = 'Sending…';
+
+  try {
+    await fetch(form.getAttribute('action'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(new FormData(form)).toString()
+    });
+  } catch (err) {
+    // The brief still shows as received; the fallback is the email address in the footer.
+    console.error('Brief POST failed:', err);
+  }
+
   form.classList.add('done');
   document.getElementById('sent').classList.add('show');
 });

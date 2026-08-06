@@ -114,10 +114,12 @@ A conversion-focused one-page site selling software development services. Sectio
 - Type: Bricolage Grotesque (display), Instrument Sans (body), JetBrains Mono (labels, prices, diff) — all embedded as base64 woff2, so the page never calls out to Google Fonts.
 - The contact form is the hero's visual anchor: a dark elevated card on a light page.
 
-**Must be replaced before launch**
-- **Reviews are placeholders.** Three named testimonials show the layout only. Swap in real, attributable quotes — publishing invented testimonials as genuine is a legal and trust problem.
-- **The form has no backend.** `<form action="#">` with a front-end-only confirmation. Point `action` at Formspree, Basin, or your own endpoint.
-- **Stats, projects, prices, and the email are illustrative** — 11 yrs / 60+ / 94%, the four gallery projects, the four price points, `hello@kayleestudio.com`.
+**Form handling**
+Wired to **Netlify Forms** — deploy to Netlify and briefs land under Forms > brief with no server to run. The form posts via `fetch` so the page never navigates; if the POST fails the confirmation still shows and the footer email is the fallback. To switch handlers (Formspree, Basin, own API), set `action` to the endpoint URL and delete the `data-netlify` attributes plus the two hidden inputs.
+
+**Must be replaced before launch** (full checklist is an HTML comment at the top of `<body>`)
+- **Reviews are placeholders and are marked as such on the page** — a dashed amber note above the grid and dashed card borders, driven by `data-sample` on `.revs`. Replace all three with real, named, permitted quotes, then delete the note and the attribute. Publishing invented testimonials as genuine breaks FTC endorsement rules and is the fastest way to lose a prospect who checks.
+- **Stats, projects, prices, contact, domain, and open slots are illustrative** — 11 yrs / 60+ / 94%, the four gallery projects, the four price points, `hello@kayleestudio.com`, the `og:url`/canonical domain, and the September/October slot counts.
 
 **Edge Cases / Gotchas**
 - Chromium in this sandbox can't reach Google Fonts (proxy resets the request), which is why the fonts are embedded. Verify type in a browser, not by assuming the `<link>` worked.
@@ -129,6 +131,7 @@ A conversion-focused one-page site selling software development services. Sectio
 
 **Changelog**
 - 2026-08-06: Built.
+- 2026-08-06: Wired the form to Netlify Forms with a non-navigating `fetch` POST. Marked the sample reviews as placeholders on the page so they can't ship by accident. Added Open Graph/Twitter metadata, theme-color, canonical, and an inline SVG favicon (removes the last 404).
 
 ## Bottom Line
 
