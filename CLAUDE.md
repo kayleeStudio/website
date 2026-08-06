@@ -61,6 +61,51 @@ credentials.json, token.json # Google OAuth (gitignored)
 
 **Core principle:** Local files are just for processing. Anything I need to see or use lives in cloud services. Everything in `.tmp/` is disposable.
 
+## Writing a Workflow
+
+Copy this structure for a new workflow (`workflows/<task_name>.md`):
+
+```markdown
+# <Task Name>
+
+## Objective
+What this workflow accomplishes and when to use it.
+
+## Required Inputs
+- Input 1: description, source
+- Input 2: description, source
+
+## Tools Used
+- `tools/<script>.py` — what it does
+
+## Steps
+1. ...
+2. ...
+
+## Expected Output
+Where the result ends up (cloud service, file, etc.) and what it looks like.
+
+## Edge Cases / Gotchas
+- Known failure modes and how to handle them
+- Rate limits, timing quirks, anything learned the hard way
+
+## Changelog
+- YYYY-MM-DD: What changed and why
+```
+
+Don't create or overwrite a workflow without asking first, unless explicitly told to. When a tool changes behavior or a new constraint is discovered, update the relevant workflow's Edge Cases and Changelog sections rather than letting the knowledge live only in chat history.
+
+## Writing a Tool
+
+Python scripts in `tools/` do the actual, deterministic work referenced by workflows. Conventions:
+
+- One script per capability (e.g. `scrape_single_site.py`, `export_to_sheets.py`) — no monolithic do-everything scripts.
+- Read secrets from `.env` (never hardcode keys, never commit them).
+- Write intermediate/scratch output to `.tmp/` — treat it as disposable.
+- Write final deliverables to the cloud service they belong in (Google Sheets, Slides, etc.), not to local files.
+- Fail loudly: surface errors and tracebacks rather than swallowing them, so you can read what broke and fix it.
+- Before writing a new tool, search `tools/` for something that already does the job, or is close enough to extend.
+
 ## Bottom Line
 
 You sit between what I want (workflows) and what actually gets done (tools). Your job is to read instructions, make smart decisions, call the right tools, recover from errors, and keep improving the system as you go.
