@@ -100,6 +100,36 @@ Where the result ends up (cloud service, file, etc.) and what it looks like.
 
 <!-- New builds go below this line -->
 
+### Landing page — Kaylee Studio — 2026-08-06
+
+**Objective**
+A conversion-focused one-page site selling software development services. Section order is fixed: hero + contact form, trust badges, services, why us, gallery, reviews, final CTA.
+
+**Output**
+`index.html` — one self-contained file, no build step, no external requests. Open it directly or serve the directory.
+
+**Design decisions**
+- Signature device is a **git diff**. "Why us" is a real diff block (`−` old agency experience / `+` what happens here) that reveals line by line on scroll. The `+` mark, service bullets, and the green CTA colour all derive from it.
+- Palette: porcelain `#F1F3EF` page, ink `#131A22` cards, diff-green `#1F7A4D` for every CTA, diff-red only inside the diff, brass `#E3B23C` in small doses.
+- Type: Bricolage Grotesque (display), Instrument Sans (body), JetBrains Mono (labels, prices, diff) — all embedded as base64 woff2, so the page never calls out to Google Fonts.
+- The contact form is the hero's visual anchor: a dark elevated card on a light page.
+
+**Must be replaced before launch**
+- **Reviews are placeholders.** Three named testimonials show the layout only. Swap in real, attributable quotes — publishing invented testimonials as genuine is a legal and trust problem.
+- **The form has no backend.** `<form action="#">` with a front-end-only confirmation. Point `action` at Formspree, Basin, or your own endpoint.
+- **Stats, projects, prices, and the email are illustrative** — 11 yrs / 60+ / 94%, the four gallery projects, the four price points, `hello@kayleestudio.com`.
+
+**Edge Cases / Gotchas**
+- Chromium in this sandbox can't reach Google Fonts (proxy resets the request), which is why the fonts are embedded. Verify type in a browser, not by assuming the `<link>` worked.
+- CSS specificity bit twice on this page: `.nav-links a` beat `.btn-add` (grey button text) and `.final p` beat `.final-note` (wrong margin). When a shared element selector and a component class both style the same element, scope the element selector with `:not(.class)`.
+- Gallery screens need a fixed pixel height, not `aspect-ratio` — the asymmetric 7/5 grid makes ratio-sized panels wildly different heights across a row.
+
+**Verify**
+`python3 -m http.server 8099`, then check: section order, form validates and confirms, no horizontal scroll at 390px, no console errors.
+
+**Changelog**
+- 2026-08-06: Built.
+
 ## Bottom Line
 
 You sit between what I want (workflows) and what actually gets done (tools) — both live in this one file now. Your job is to read instructions, make smart decisions, run the right code, recover from errors, and keep improving the system as you go.
